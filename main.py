@@ -33,10 +33,10 @@ class Game:
         self.game_over = False
         self.enemies_spawned = False
         self.boss_spawned = False
-        self.level = 9
-        self.num_of_enemy = 7
-        self.enemy_limit = 30
-        self.enemy_speed_limit = 10
+        self.level = 1
+        self.num_of_enemy = 11
+        self.enemy_limit = 75
+        self.enemy_speed_limit = 16
         self.enemy_change_limit = 75
         self.level_up = False
         self.newHighscore = False
@@ -68,7 +68,6 @@ class Game:
             self.enemy.add(Enemy())
 
     def levels(self):
-        print(len(self.enemy))
         for enemy in self.enemy:
             enemy.movement()
         if self.num_of_enemy >= self.enemy_limit:
@@ -78,8 +77,8 @@ class Game:
             self.enemies_spawned = True
         if self.level_up:
             for enemy in self.enemy:
-                enemy.speed += 0.5
-                enemy.yChange += 1.5
+                enemy.speed += 1
+                enemy.yChange += 2
                 if enemy.speed >= self.enemy_speed_limit:
                     enemy.speed = self.enemy_speed_limit
                 if enemy.yChange >= self.enemy_change_limit:
@@ -87,7 +86,7 @@ class Game:
             self.level_up = False
         if len(self.enemy) <= 0 and self.boss_spawned is False:
             self.level_up = True
-            self.num_of_enemy += 3
+            self.num_of_enemy += 4
             self.level += 1
             self.enemies_spawned = False
         if self.level == 10 or self.level == 30 or self.level == 50 or self.level == 75:
@@ -153,7 +152,7 @@ class Game:
                 "GAME PAUSED", True, (255, 255, 255)
             )
             instructionDisplay = self.fonts["pausedInstruction"].render(
-                "Press ecs to continue and Q to quit", True, (255, 255, 255)
+                "Press esc to continue and Q to quit", True, (255, 255, 255)
             )
             self.screen.blit(pausedDisplay, (160, 250))
             self.screen.blit(instructionDisplay, (135, 350))
@@ -202,10 +201,16 @@ class Game:
         bossHealth = self.fonts["bossHealth"].render(
             "Health: " + str(boss.life), True, (255, 255, 255)
         )
+        levelDisplay = self.fonts['bossHealth'].render(
+            f"Level: {self.level}", True, (255, 255, 255)
+        )
+        
         self.screen.blit(score, (320, 10))
         self.screen.blit(life, (10, 10))
         if self.boss_spawned:
             self.screen.blit(bossHealth, (610, 10))
+        else:
+            self.screen.blit(levelDisplay, (610, 10))
         if player.life == 3:
             self.screen.blit(self.lifeSymbol[0], (85, 20))
             self.screen.blit(self.lifeSymbol[1], (115, 20))
@@ -235,7 +240,7 @@ class Game:
         if boss.dead:
             self.explosionSound.play()
             boss.life = boss.newlife
-            self.num_of_enemy = 7
+            self.num_of_enemy = self.num_of_enemy + 3
             boss.dead = False
             self.boss_spawned = False
             self.level += 1
@@ -244,7 +249,7 @@ class Game:
                 self.scoreValue += boss.kill
                 boss.x = 400
                 boss.y = 50
-                boss.speed += 1
+                boss.speed += 2
                 boss.damage += 3
                 boss.newlife += 50
                 player.speed += 0.4
@@ -350,11 +355,13 @@ class Game:
                     if self.game_over:
                         self.game_over = False
                         self.levels()
+                        self.level = 1
                         player.life = 3
                         player.speed = 6
                         boss.speed = 5
                         boss.y = 50
                         boss.x = 400
+                        self.num_of_enemy = 11
                         self.scoreValue = 0
                         for enemy in self.enemy:
                             enemy.speed = 4

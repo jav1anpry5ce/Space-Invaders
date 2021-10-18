@@ -59,7 +59,7 @@ class Bullet(pygame.sprite.Sprite):
 class Life(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.extra_life_position = -500
+        self.extra_life_position = -250
         self.x = random.randint(0, 735)
         self.y = self.extra_life_position
         self.speed = 2.5
