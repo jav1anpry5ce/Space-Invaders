@@ -34,10 +34,10 @@ class Game:
         self.enemies_spawned = False
         self.boss_spawned = False
         self.level = 1
-        self.num_of_enemy = 11
+        self.num_of_enemy = 13
         self.enemy_limit = 75
-        self.enemy_speed_limit = 16
-        self.enemy_change_limit = 75
+        self.enemy_speed_limit = 18
+        self.enemy_change_limit = 78
         self.level_up = False
         self.newHighscore = False
         self.debugMode = False
@@ -78,13 +78,13 @@ class Game:
         if self.level_up:
             for enemy in self.enemy:
                 enemy.speed += 1
-                enemy.yChange += 2
+                enemy.yChange += 4
                 if enemy.speed >= self.enemy_speed_limit:
                     enemy.speed = self.enemy_speed_limit
                 if enemy.yChange >= self.enemy_change_limit:
                     enemy.yChange = self.enemy_change_limit
             self.level_up = False
-        if len(self.enemy) <= 0 and self.boss_spawned is False:
+        if len(self.enemy) <= 0 and self.boss_spawned == False and self.game_over == False:
             self.level_up = True
             self.num_of_enemy += 4
             self.level += 1
@@ -161,6 +161,7 @@ class Game:
     def gameOver(self):
         if self.game_over:
             self.enemy.empty()
+            self.boss_spawned = False
             over = self.fonts["overFont"].render("GAME OVER", True, (255, 255, 255))
             playAgain = self.fonts["playAgain"].render(
                 "Press Enter to play again", True, (255, 255, 255)
@@ -294,6 +295,8 @@ class Game:
                 "FPS: " + str(fpsText), True, (255, 255, 255)
             )
             self.screen.blit(frames, (10, 60))
+        if extralife.y > 700:
+            extralife.y = -700
         if player.life < 3 and player.life != 0:
             self.screen.blit(extralife.image, (round(extralife.x), round(extralife.y)))
             extralife.movement()
@@ -361,10 +364,11 @@ class Game:
                         boss.speed = 5
                         boss.y = 50
                         boss.x = 400
-                        self.num_of_enemy = 11
+                        self.num_of_enemy = 13
                         self.scoreValue = 0
                         for enemy in self.enemy:
                             enemy.speed = 4
+                            enemy.yChange = 50
                 if event.key == pygame.K_F3:
                     if self.debugMode == False:
                         self.debugMode = True
